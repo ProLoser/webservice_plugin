@@ -83,6 +83,7 @@ class WebserviceView extends Object {
 				$this->{$var} = $controller->{$var};
 			}
 		}
+		if (empty($this->params['useJsonNative'])) $this->params['useJsonNative'] = false;
 		parent::__construct();
 
 		if ($register) {
@@ -163,7 +164,7 @@ class WebserviceView extends Object {
 		$out = $keys = array();
 		$numeric = true;
 
-		if ($this->json_useNative) {
+		if ($this->params['useJsonNative']) {
 			$rt = json_encode($data);
 		} else {
 			if (is_null($data)) {
