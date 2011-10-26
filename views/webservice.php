@@ -101,6 +101,9 @@ class WebserviceView extends Object {
 			$textArea = true;
 			unset($this->viewVars['webserviceTextarea']);
 		}
+		if(!empty($this->validationErrors)) {
+			$this->viewVars['validationErrors'] = $this->validationErrors;
+		}
 
 		if ($this->params['url']['ext'] == 'json') {
 			header("Pragma: no-cache");
