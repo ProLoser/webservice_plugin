@@ -32,5 +32,4 @@ class WebserviceComponent extends Component {
 			$controller->viewClass = 'Webservice.Webservice';
 		}
 	}
-
 }

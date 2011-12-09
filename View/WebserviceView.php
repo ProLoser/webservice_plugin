@@ -37,6 +37,14 @@ class WebserviceView extends View {
 	public $xml_version = '1.0';
 
 /**
+ * Determines whether native JSON extension is used for encoding.  Set by object constructor.
+ *
+ * @var boolean
+ * @access public
+ */
+   public $json_useNative = true;
+
+/**
  * Array of parameter data
  *
  * @var array Parameter data
@@ -82,11 +90,16 @@ class WebserviceView extends View {
 
 	public function render() {
 		Configure::write('debug', 0);
+		$textarea = false;
 		if (isset($this->viewVars['debugToolbarPanels']))
 			unset($this->viewVars['debugToolbarPanels']);
 		if (isset($this->viewVars['debugToolbarJavascript']))
 			unset($this->viewVars['debugToolbarJavascript']);
-		if(!empty($this->validationErrors)) {
+		if (isset($this->viewVars['webserviceTextarea'])) {
+			$textarea = true;
+			unset($this->viewVars['webserviceTextarea']);
+		}
+		if (!empty($this->validationErrors)) {
             $this->viewVars['validationErrors'] = $this->validationErrors;
         }
 		switch ($this->request->params['ext']) {
@@ -95,12 +108,14 @@ class WebserviceView extends View {
 				$this->_setHeader("Cache-Control: no-store, no-cache, max-age=0, must-revalidate");
 				$this->_setHeader('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 				$this->_setHeader("Last-Modified: " . gmdate('D, d M Y H:i:s') . ' GMT');
-				$this->_setHeader('Content-type: application/json');
-				return json_encode($this->viewVars);
+				if (!$textarea)
+					$this->_setHeader('Content-type: application/json');
+				return ($textarea ? '<textarea>' : '') . json_encode($this->viewVars) . ($textarea ? '</textarea>' : '');
 				break;
 			case 'xml':
-				$this->_setHeader('Content-type: application/xml');
-				return $this->toXml($this->viewVars);
+				if (!$textarea)
+					$this->_setHeader('Content-type: application/xml');
+				return ($textarea ? '<textarea>' : '') . $this->toXml($this->viewVars) . ($textarea ? '</textarea>' : '');
 		}
 	}
 
